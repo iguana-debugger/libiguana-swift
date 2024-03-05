@@ -368,11 +368,15 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 
 public protocol IguanaEnvironmentProtocol : AnyObject {
     
+    func continueExecution() throws 
+    
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
      */
     func loadKmd(kmd: String) throws 
+    
+    func pause() throws 
     
     func ping() throws  -> String
     
@@ -385,9 +389,15 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func registers() throws  -> Registers
     
-    func start(steps: UInt32) throws 
+    /**
+     * Starts execution, with the given step limit. If the step limit is 0, the emulator will
+     * execute indefinitely.
+     */
+    func startExecution(steps: UInt32) throws 
     
     func status() throws  -> BoardState
+    
+    func stopExecution() throws 
     
     func terminalMessages() throws  -> String
     
@@ -431,6 +441,13 @@ public class IguanaEnvironment:
 
     
     
+    public func continueExecution() throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(self.uniffiClonePointer(), $0
+    )
+}
+    }
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
@@ -440,6 +457,13 @@ public class IguanaEnvironment:
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_load_kmd(self.uniffiClonePointer(), 
         FfiConverterString.lower(kmd),$0
+    )
+}
+    }
+    public func pause() throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_pause(self.uniffiClonePointer(), $0
     )
 }
     }
@@ -483,10 +507,14 @@ public class IguanaEnvironment:
 }
         )
     }
-    public func start(steps: UInt32) throws  {
+    /**
+     * Starts execution, with the given step limit. If the step limit is 0, the emulator will
+     * execute indefinitely.
+     */
+    public func startExecution(steps: UInt32) throws  {
         try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
-    uniffi_libiguana_fn_method_iguanaenvironment_start(self.uniffiClonePointer(), 
+    uniffi_libiguana_fn_method_iguanaenvironment_start_execution(self.uniffiClonePointer(), 
         FfiConverterUInt32.lower(steps),$0
     )
 }
@@ -499,6 +527,13 @@ public class IguanaEnvironment:
     )
 }
         )
+    }
+    public func stopExecution() throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_stop_execution(self.uniffiClonePointer(), $0
+    )
+}
     }
     public func terminalMessages() throws  -> String {
         return try  FfiConverterString.lift(
@@ -1104,7 +1139,13 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd() != 22342) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_pause() != 58650) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_ping() != 59828) {
@@ -1119,10 +1160,13 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_start() != 31797) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_start_execution() != 23522) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_status() != 323) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_stop_execution() != 65075) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages() != 36437) {
