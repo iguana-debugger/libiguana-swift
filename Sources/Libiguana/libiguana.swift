@@ -369,13 +369,6 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 public protocol IguanaEnvironmentProtocol : AnyObject {
     
     /**
-     * Kills the underlying jimulator process. This function should not be used from within Rust -
-     * `IguanaEnvironment` implements `Drop` and handles killing the process for you. This exists
-     * because for some reason `Drop` isn't working through `uniffi`.
-     */
-    func killJimulator() throws 
-    
-    /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
      */
@@ -438,18 +431,6 @@ public class IguanaEnvironment:
 
     
     
-    /**
-     * Kills the underlying jimulator process. This function should not be used from within Rust -
-     * `IguanaEnvironment` implements `Drop` and handles killing the process for you. This exists
-     * because for some reason `Drop` isn't working through `uniffi`.
-     */
-    public func killJimulator() throws  {
-        try 
-    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
-    uniffi_libiguana_fn_method_iguanaenvironment_kill_jimulator(self.uniffiClonePointer(), $0
-    )
-}
-    }
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
@@ -1122,9 +1103,6 @@ private var initializationResult: InitializationResult {
     let scaffolding_contract_version = ffi_libiguana_uniffi_contract_version()
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
-    }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_kill_jimulator() != 33920) {
-        return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd() != 22342) {
         return InitializationResult.apiChecksumMismatch
