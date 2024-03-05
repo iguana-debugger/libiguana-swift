@@ -389,6 +389,8 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func registers() throws  -> Registers
     
+    func reset() throws 
+    
     /**
      * Starts execution, with the given step limit. If the step limit is 0, the emulator will
      * execute indefinitely.
@@ -506,6 +508,13 @@ public class IguanaEnvironment:
     )
 }
         )
+    }
+    public func reset() throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_reset(self.uniffiClonePointer(), $0
+    )
+}
     }
     /**
      * Starts execution, with the given step limit. If the step limit is 0, the emulator will
@@ -1158,6 +1167,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_reset() != 26955) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_start_execution() != 23522) {

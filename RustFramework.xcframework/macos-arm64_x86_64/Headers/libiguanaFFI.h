@@ -71,6 +71,8 @@ RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_read_to_end(void*_Nonnul
 );
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_registers(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+void uniffi_libiguana_fn_method_iguanaenvironment_reset(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+);
 void uniffi_libiguana_fn_method_iguanaenvironment_start_execution(void*_Nonnull ptr, uint32_t steps, RustCallStatus *_Nonnull out_status
 );
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_status(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
@@ -216,6 +218,9 @@ uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_read_to_end(void
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_registers(void
+    
+);
+uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_reset(void
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_start_execution(void
