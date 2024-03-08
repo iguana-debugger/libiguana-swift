@@ -370,6 +370,8 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func continueExecution() throws 
     
+    func currentKmd()  -> [Token]?
+    
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
@@ -449,6 +451,16 @@ public class IguanaEnvironment:
     uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(self.uniffiClonePointer(), $0
     )
 }
+    }
+    public func currentKmd()  -> [Token]? {
+        return try!  FfiConverterOptionSequenceTypeToken.lift(
+            try! 
+    rustCall() {
+    
+    uniffi_libiguana_fn_method_iguanaenvironment_current_kmd(self.uniffiClonePointer(), $0
+    )
+}
+        )
     }
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
@@ -1099,6 +1111,51 @@ extension Status: Equatable, Hashable {}
 
 
 
+fileprivate struct FfiConverterOptionSequenceTypeToken: FfiConverterRustBuffer {
+    typealias SwiftType = [Token]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceTypeToken.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceTypeToken.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+fileprivate struct FfiConverterSequenceTypeToken: FfiConverterRustBuffer {
+    typealias SwiftType = [Token]
+
+    public static func write(_ value: [Token], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for item in value {
+            FfiConverterTypeToken.write(item, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [Token] {
+        let len: Int32 = try readInt(&buf)
+        var seq = [Token]()
+        seq.reserveCapacity(Int(len))
+        for _ in 0 ..< len {
+            seq.append(try FfiConverterTypeToken.read(from: &buf))
+        }
+        return seq
+    }
+}
+
+
+
 
 /**
  * Typealias from the type name used in the UDL file to the builtin type.  This
@@ -1149,6 +1206,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.contractVersionMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 17988) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd() != 22342) {
