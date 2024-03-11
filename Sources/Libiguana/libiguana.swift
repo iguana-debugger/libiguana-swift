@@ -310,6 +310,27 @@ fileprivate struct FfiConverterUInt32: FfiConverterPrimitive {
     }
 }
 
+fileprivate struct FfiConverterBool : FfiConverter {
+    typealias FfiType = Int8
+    typealias SwiftType = Bool
+
+    public static func lift(_ value: Int8) throws -> Bool {
+        return value != 0
+    }
+
+    public static func lower(_ value: Bool) -> Int8 {
+        return value ? 1 : 0
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> Bool {
+        return try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: Bool, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 fileprivate struct FfiConverterString: FfiConverter {
     typealias SwiftType = String
     typealias FfiType = RustBuffer
@@ -370,7 +391,7 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func continueExecution() throws 
     
-    func currentKmd()  -> [Token]?
+    func currentKmd()  -> [KmdparseToken]?
     
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
@@ -452,8 +473,8 @@ public class IguanaEnvironment:
     )
 }
     }
-    public func currentKmd()  -> [Token]? {
-        return try!  FfiConverterOptionSequenceTypeToken.lift(
+    public func currentKmd()  -> [KmdparseToken]? {
+        return try!  FfiConverterOptionSequenceTypeKmdparseToken.lift(
             try! 
     rustCall() {
     
@@ -704,6 +725,173 @@ public func FfiConverterTypeBoardState_lower(_ value: BoardState) -> RustBuffer 
 }
 
 
+public struct KmdparseLabel {
+    /**
+     * The name of the label
+     */
+    public var name: String
+    /**
+     * The associated memory address of the label
+     */
+    public var memoryAddress: UInt32
+    /**
+     * Whether or not the label is global (true for global, false for local)
+     */
+    public var isExported: Bool
+    /**
+     * Whether or not the label points to a Thumb instruction
+     */
+    public var isThumb: Bool
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        /**
+         * The name of the label
+         */
+        name: String, 
+        /**
+         * The associated memory address of the label
+         */
+        memoryAddress: UInt32, 
+        /**
+         * Whether or not the label is global (true for global, false for local)
+         */
+        isExported: Bool, 
+        /**
+         * Whether or not the label points to a Thumb instruction
+         */
+        isThumb: Bool) {
+        self.name = name
+        self.memoryAddress = memoryAddress
+        self.isExported = isExported
+        self.isThumb = isThumb
+    }
+}
+
+
+extension KmdparseLabel: Equatable, Hashable {
+    public static func ==(lhs: KmdparseLabel, rhs: KmdparseLabel) -> Bool {
+        if lhs.name != rhs.name {
+            return false
+        }
+        if lhs.memoryAddress != rhs.memoryAddress {
+            return false
+        }
+        if lhs.isExported != rhs.isExported {
+            return false
+        }
+        if lhs.isThumb != rhs.isThumb {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(name)
+        hasher.combine(memoryAddress)
+        hasher.combine(isExported)
+        hasher.combine(isThumb)
+    }
+}
+
+
+public struct FfiConverterTypeKmdparseLabel: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> KmdparseLabel {
+        return
+            try KmdparseLabel(
+                name: FfiConverterString.read(from: &buf), 
+                memoryAddress: FfiConverterUInt32.read(from: &buf), 
+                isExported: FfiConverterBool.read(from: &buf), 
+                isThumb: FfiConverterBool.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: KmdparseLabel, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.name, into: &buf)
+        FfiConverterUInt32.write(value.memoryAddress, into: &buf)
+        FfiConverterBool.write(value.isExported, into: &buf)
+        FfiConverterBool.write(value.isThumb, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeKmdparseLabel_lift(_ buf: RustBuffer) throws -> KmdparseLabel {
+    return try FfiConverterTypeKmdparseLabel.lift(buf)
+}
+
+public func FfiConverterTypeKmdparseLabel_lower(_ value: KmdparseLabel) -> RustBuffer {
+    return FfiConverterTypeKmdparseLabel.lower(value)
+}
+
+
+public struct KmdparseLine {
+    public var memoryAddress: UInt32?
+    public var word: KmdparseWord?
+    public var comment: String
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        memoryAddress: UInt32?, 
+        word: KmdparseWord?, 
+        comment: String) {
+        self.memoryAddress = memoryAddress
+        self.word = word
+        self.comment = comment
+    }
+}
+
+
+extension KmdparseLine: Equatable, Hashable {
+    public static func ==(lhs: KmdparseLine, rhs: KmdparseLine) -> Bool {
+        if lhs.memoryAddress != rhs.memoryAddress {
+            return false
+        }
+        if lhs.word != rhs.word {
+            return false
+        }
+        if lhs.comment != rhs.comment {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(memoryAddress)
+        hasher.combine(word)
+        hasher.combine(comment)
+    }
+}
+
+
+public struct FfiConverterTypeKmdparseLine: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> KmdparseLine {
+        return
+            try KmdparseLine(
+                memoryAddress: FfiConverterOptionUInt32.read(from: &buf), 
+                word: FfiConverterOptionTypeKmdparseWord.read(from: &buf), 
+                comment: FfiConverterString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: KmdparseLine, into buf: inout [UInt8]) {
+        FfiConverterOptionUInt32.write(value.memoryAddress, into: &buf)
+        FfiConverterOptionTypeKmdparseWord.write(value.word, into: &buf)
+        FfiConverterString.write(value.comment, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeKmdparseLine_lift(_ buf: RustBuffer) throws -> KmdparseLine {
+    return try FfiConverterTypeKmdparseLine.lift(buf)
+}
+
+public func FfiConverterTypeKmdparseLine_lower(_ value: KmdparseLine) -> RustBuffer {
+    return FfiConverterTypeKmdparseLine.lower(value)
+}
+
+
 public struct Registers {
     public var r0: UInt32
     public var r1: UInt32
@@ -886,6 +1074,141 @@ public func FfiConverterTypeRegisters_lift(_ buf: RustBuffer) throws -> Register
 public func FfiConverterTypeRegisters_lower(_ value: Registers) -> RustBuffer {
     return FfiConverterTypeRegisters.lower(value)
 }
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum KmdparseToken {
+    
+    case tag
+    case line(
+        line: KmdparseLine
+    )
+    case label(
+        label: KmdparseLabel
+    )
+}
+
+public struct FfiConverterTypeKmdparseToken: FfiConverterRustBuffer {
+    typealias SwiftType = KmdparseToken
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> KmdparseToken {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .tag
+        
+        case 2: return .line(
+            line: try FfiConverterTypeKmdparseLine.read(from: &buf)
+        )
+        
+        case 3: return .label(
+            label: try FfiConverterTypeKmdparseLabel.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: KmdparseToken, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case .tag:
+            writeInt(&buf, Int32(1))
+        
+        
+        case let .line(line):
+            writeInt(&buf, Int32(2))
+            FfiConverterTypeKmdparseLine.write(line, into: &buf)
+            
+        
+        case let .label(label):
+            writeInt(&buf, Int32(3))
+            FfiConverterTypeKmdparseLabel.write(label, into: &buf)
+            
+        }
+    }
+}
+
+
+public func FfiConverterTypeKmdparseToken_lift(_ buf: RustBuffer) throws -> KmdparseToken {
+    return try FfiConverterTypeKmdparseToken.lift(buf)
+}
+
+public func FfiConverterTypeKmdparseToken_lower(_ value: KmdparseToken) -> RustBuffer {
+    return FfiConverterTypeKmdparseToken.lower(value)
+}
+
+
+extension KmdparseToken: Equatable, Hashable {}
+
+
+
+// Note that we don't yet support `indirect` for enums.
+// See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
+public enum KmdparseWord {
+    
+    /**
+     * An instruction, represented as 4 bytes. kmdparse handles flipping the bytes, so that
+     * instructions are the right way around.
+     */
+    case instruction(
+        instruction: U84Arr
+    )
+    case data(
+        data: Data
+    )
+}
+
+public struct FfiConverterTypeKmdparseWord: FfiConverterRustBuffer {
+    typealias SwiftType = KmdparseWord
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> KmdparseWord {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+        
+        case 1: return .instruction(
+            instruction: try FfiConverterTypeU84Arr.read(from: &buf)
+        )
+        
+        case 2: return .data(
+            data: try FfiConverterData.read(from: &buf)
+        )
+        
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: KmdparseWord, into buf: inout [UInt8]) {
+        switch value {
+        
+        
+        case let .instruction(instruction):
+            writeInt(&buf, Int32(1))
+            FfiConverterTypeU84Arr.write(instruction, into: &buf)
+            
+        
+        case let .data(data):
+            writeInt(&buf, Int32(2))
+            FfiConverterData.write(data, into: &buf)
+            
+        }
+    }
+}
+
+
+public func FfiConverterTypeKmdparseWord_lift(_ buf: RustBuffer) throws -> KmdparseWord {
+    return try FfiConverterTypeKmdparseWord.lift(buf)
+}
+
+public func FfiConverterTypeKmdparseWord_lower(_ value: KmdparseWord) -> RustBuffer {
+    return FfiConverterTypeKmdparseWord.lower(value)
+}
+
+
+extension KmdparseWord: Equatable, Hashable {}
+
+
 
 
 public enum LibiguanaError {
@@ -1111,8 +1434,8 @@ extension Status: Equatable, Hashable {}
 
 
 
-fileprivate struct FfiConverterOptionSequenceTypeToken: FfiConverterRustBuffer {
-    typealias SwiftType = [Token]?
+fileprivate struct FfiConverterOptionUInt32: FfiConverterRustBuffer {
+    typealias SwiftType = UInt32?
 
     public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
         guard let value = value else {
@@ -1120,41 +1443,81 @@ fileprivate struct FfiConverterOptionSequenceTypeToken: FfiConverterRustBuffer {
             return
         }
         writeInt(&buf, Int8(1))
-        FfiConverterSequenceTypeToken.write(value, into: &buf)
+        FfiConverterUInt32.write(value, into: &buf)
     }
 
     public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
         switch try readInt(&buf) as Int8 {
         case 0: return nil
-        case 1: return try FfiConverterSequenceTypeToken.read(from: &buf)
+        case 1: return try FfiConverterUInt32.read(from: &buf)
         default: throw UniffiInternalError.unexpectedOptionalTag
         }
     }
 }
 
-fileprivate struct FfiConverterSequenceTypeToken: FfiConverterRustBuffer {
-    typealias SwiftType = [Token]
+fileprivate struct FfiConverterOptionTypeKmdparseWord: FfiConverterRustBuffer {
+    typealias SwiftType = KmdparseWord?
 
-    public static func write(_ value: [Token], into buf: inout [UInt8]) {
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterTypeKmdparseWord.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterTypeKmdparseWord.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+fileprivate struct FfiConverterOptionSequenceTypeKmdparseToken: FfiConverterRustBuffer {
+    typealias SwiftType = [KmdparseToken]?
+
+    public static func write(_ value: SwiftType, into buf: inout [UInt8]) {
+        guard let value = value else {
+            writeInt(&buf, Int8(0))
+            return
+        }
+        writeInt(&buf, Int8(1))
+        FfiConverterSequenceTypeKmdparseToken.write(value, into: &buf)
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> SwiftType {
+        switch try readInt(&buf) as Int8 {
+        case 0: return nil
+        case 1: return try FfiConverterSequenceTypeKmdparseToken.read(from: &buf)
+        default: throw UniffiInternalError.unexpectedOptionalTag
+        }
+    }
+}
+
+fileprivate struct FfiConverterSequenceTypeKmdparseToken: FfiConverterRustBuffer {
+    typealias SwiftType = [KmdparseToken]
+
+    public static func write(_ value: [KmdparseToken], into buf: inout [UInt8]) {
         let len = Int32(value.count)
         writeInt(&buf, len)
         for item in value {
-            FfiConverterTypeToken.write(item, into: &buf)
+            FfiConverterTypeKmdparseToken.write(item, into: &buf)
         }
     }
 
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [Token] {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [KmdparseToken] {
         let len: Int32 = try readInt(&buf)
-        var seq = [Token]()
+        var seq = [KmdparseToken]()
         seq.reserveCapacity(Int(len))
         for _ in 0 ..< len {
-            seq.append(try FfiConverterTypeToken.read(from: &buf))
+            seq.append(try FfiConverterTypeKmdparseToken.read(from: &buf))
         }
         return seq
     }
 }
-
-
 
 
 /**
@@ -1208,7 +1571,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 17988) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 35263) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd() != 22342) {
