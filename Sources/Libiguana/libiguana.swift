@@ -387,7 +387,82 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 
 
 
+public protocol AasmOutputProtocol : AnyObject {
+    
+}
+
+public class AasmOutput:
+    AasmOutputProtocol {
+    fileprivate let pointer: UnsafeMutableRawPointer
+
+    // TODO: We'd like this to be `private` but for Swifty reasons,
+    // we can't implement `FfiConverter` without making this `required` and we can't
+    // make it `required` without making it `public`.
+    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
+        self.pointer = pointer
+    }
+
+    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
+        return try! rustCall { uniffi_libiguana_fn_clone_aasmoutput(self.pointer, $0) }
+    }
+
+    deinit {
+        try! rustCall { uniffi_libiguana_fn_free_aasmoutput(pointer, $0) }
+    }
+
+    
+
+    
+    
+
+}
+
+public struct FfiConverterTypeAasmOutput: FfiConverter {
+
+    typealias FfiType = UnsafeMutableRawPointer
+    typealias SwiftType = AasmOutput
+
+    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> AasmOutput {
+        return AasmOutput(unsafeFromRawPointer: pointer)
+    }
+
+    public static func lower(_ value: AasmOutput) -> UnsafeMutableRawPointer {
+        return value.uniffiClonePointer()
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> AasmOutput {
+        let v: UInt64 = try readInt(&buf)
+        // The Rust code won't compile if a pointer won't fit in a UInt64.
+        // We have to go via `UInt` because that's the thing that's the size of a pointer.
+        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
+        if (ptr == nil) {
+            throw UniffiInternalError.unexpectedNullPointer
+        }
+        return try lift(ptr!)
+    }
+
+    public static func write(_ value: AasmOutput, into buf: inout [UInt8]) {
+        // This fiddling is because `Int` is the thing that's the same size as a pointer.
+        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
+        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
+    }
+}
+
+
+public func FfiConverterTypeAasmOutput_lift(_ pointer: UnsafeMutableRawPointer) throws -> AasmOutput {
+    return try FfiConverterTypeAasmOutput.lift(pointer)
+}
+
+public func FfiConverterTypeAasmOutput_lower(_ value: AasmOutput) -> UnsafeMutableRawPointer {
+    return FfiConverterTypeAasmOutput.lower(value)
+}
+
+
+
+
 public protocol IguanaEnvironmentProtocol : AnyObject {
+    
+    func compileAasm(aasmString: String) throws  -> AasmOutput
     
     func continueExecution() throws 
     
@@ -451,10 +526,19 @@ public class IguanaEnvironment:
     public func uniffiClonePointer() -> UnsafeMutableRawPointer {
         return try! rustCall { uniffi_libiguana_fn_clone_iguanaenvironment(self.pointer, $0) }
     }
-    public convenience init(path: String) throws  {
+    /**
+     * Creates a new environment.
+     *
+     * While `jimulator_path` can be anything that resolves to a jimulator executable (by that, I
+     * mean you can just put `jimulator` if it is in your PATH), `aasm_path` must be an absolute
+     * path to an `aasm` executable. There must also be a file called `mnemonics` in the same
+     * directory.
+     */
+    public convenience init(jimulatorPath: String, aasmPathStr: String) throws  {
         self.init(unsafeFromRawPointer: try rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_constructor_iguanaenvironment_new(
-        FfiConverterString.lower(path),$0)
+        FfiConverterString.lower(jimulatorPath),
+        FfiConverterString.lower(aasmPathStr),$0)
 })
     }
 
@@ -466,6 +550,16 @@ public class IguanaEnvironment:
 
     
     
+    public func compileAasm(aasmString: String) throws  -> AasmOutput {
+        return try  FfiConverterTypeAasmOutput.lift(
+            try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(self.uniffiClonePointer(), 
+        FfiConverterString.lower(aasmString),$0
+    )
+}
+        )
+    }
     public func continueExecution() throws  {
         try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
@@ -1233,6 +1327,12 @@ public enum LibiguanaError {
     
     case InvalidRegisterBufferLength(message: String)
     
+    case AasmDoesNotExist(message: String)
+    
+    case FromUtf8Error(message: String)
+    
+    case MnemonicsDoesNotExist(message: String)
+    
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeLibiguanaError.lift(error)
@@ -1286,6 +1386,18 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             message: try FfiConverterString.read(from: &buf)
         )
         
+        case 10: return .AasmDoesNotExist(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
+        case 11: return .FromUtf8Error(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
+        case 12: return .MnemonicsDoesNotExist(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1315,6 +1427,12 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(8))
         case .InvalidRegisterBufferLength(_ /* message is ignored*/):
             writeInt(&buf, Int32(9))
+        case .AasmDoesNotExist(_ /* message is ignored*/):
+            writeInt(&buf, Int32(10))
+        case .FromUtf8Error(_ /* message is ignored*/):
+            writeInt(&buf, Int32(11))
+        case .MnemonicsDoesNotExist(_ /* message is ignored*/):
+            writeInt(&buf, Int32(12))
 
         
         }
@@ -1568,6 +1686,9 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 9981) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -1616,7 +1737,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_write_to_terminal() != 47269) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_constructor_iguanaenvironment_new() != 48555) {
+    if (uniffi_libiguana_checksum_constructor_iguanaenvironment_new() != 7661) {
         return InitializationResult.apiChecksumMismatch
     }
 
