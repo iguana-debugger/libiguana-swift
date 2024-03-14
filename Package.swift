@@ -25,7 +25,8 @@ let package = Package(
                 .target(name: "RustFramework")
             ],
             resources: [
-                .copy("Resources/jimulator")
+                .copy("Resources/jimulator"),
+                .copy("Resources/aasm")
             ]
         ),
     ]
