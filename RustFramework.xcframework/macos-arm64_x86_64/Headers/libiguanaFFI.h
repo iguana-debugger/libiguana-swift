@@ -51,17 +51,13 @@ typedef struct RustCallStatus {
 typedef void (*UniFfiRustFutureContinuation)(void * _Nonnull, int8_t);
 
 // Scaffolding functions
-void*_Nonnull uniffi_libiguana_fn_clone_aasmoutput(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
-);
-void uniffi_libiguana_fn_free_aasmoutput(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
-);
 void*_Nonnull uniffi_libiguana_fn_clone_iguanaenvironment(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_free_iguanaenvironment(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
 void*_Nonnull uniffi_libiguana_fn_constructor_iguanaenvironment_new(RustBuffer jimulator_path, RustBuffer aasm_path_str, RustCallStatus *_Nonnull out_status
 );
-void*_Nonnull uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnull ptr, RustBuffer aasm_string, RustCallStatus *_Nonnull out_status
+RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnull ptr, RustBuffer aasm_string, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );

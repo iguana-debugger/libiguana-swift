@@ -387,79 +387,6 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 
 
 
-public protocol AasmOutputProtocol : AnyObject {
-    
-}
-
-public class AasmOutput:
-    AasmOutputProtocol {
-    fileprivate let pointer: UnsafeMutableRawPointer
-
-    // TODO: We'd like this to be `private` but for Swifty reasons,
-    // we can't implement `FfiConverter` without making this `required` and we can't
-    // make it `required` without making it `public`.
-    required init(unsafeFromRawPointer pointer: UnsafeMutableRawPointer) {
-        self.pointer = pointer
-    }
-
-    public func uniffiClonePointer() -> UnsafeMutableRawPointer {
-        return try! rustCall { uniffi_libiguana_fn_clone_aasmoutput(self.pointer, $0) }
-    }
-
-    deinit {
-        try! rustCall { uniffi_libiguana_fn_free_aasmoutput(pointer, $0) }
-    }
-
-    
-
-    
-    
-
-}
-
-public struct FfiConverterTypeAasmOutput: FfiConverter {
-
-    typealias FfiType = UnsafeMutableRawPointer
-    typealias SwiftType = AasmOutput
-
-    public static func lift(_ pointer: UnsafeMutableRawPointer) throws -> AasmOutput {
-        return AasmOutput(unsafeFromRawPointer: pointer)
-    }
-
-    public static func lower(_ value: AasmOutput) -> UnsafeMutableRawPointer {
-        return value.uniffiClonePointer()
-    }
-
-    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> AasmOutput {
-        let v: UInt64 = try readInt(&buf)
-        // The Rust code won't compile if a pointer won't fit in a UInt64.
-        // We have to go via `UInt` because that's the thing that's the size of a pointer.
-        let ptr = UnsafeMutableRawPointer(bitPattern: UInt(truncatingIfNeeded: v))
-        if (ptr == nil) {
-            throw UniffiInternalError.unexpectedNullPointer
-        }
-        return try lift(ptr!)
-    }
-
-    public static func write(_ value: AasmOutput, into buf: inout [UInt8]) {
-        // This fiddling is because `Int` is the thing that's the same size as a pointer.
-        // The Rust code won't compile if a pointer won't fit in a `UInt64`.
-        writeInt(&buf, UInt64(bitPattern: Int64(Int(bitPattern: lower(value)))))
-    }
-}
-
-
-public func FfiConverterTypeAasmOutput_lift(_ pointer: UnsafeMutableRawPointer) throws -> AasmOutput {
-    return try FfiConverterTypeAasmOutput.lift(pointer)
-}
-
-public func FfiConverterTypeAasmOutput_lower(_ value: AasmOutput) -> UnsafeMutableRawPointer {
-    return FfiConverterTypeAasmOutput.lower(value)
-}
-
-
-
-
 public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func compileAasm(aasmString: String) throws  -> AasmOutput
@@ -749,6 +676,64 @@ public func FfiConverterTypeIguanaEnvironment_lift(_ pointer: UnsafeMutableRawPo
 
 public func FfiConverterTypeIguanaEnvironment_lower(_ value: IguanaEnvironment) -> UnsafeMutableRawPointer {
     return FfiConverterTypeIguanaEnvironment.lower(value)
+}
+
+
+public struct AasmOutput {
+    public var kmd: String
+    public var aasmTerminal: String
+
+    // Default memberwise initializers are never public by default, so we
+    // declare one manually.
+    public init(
+        kmd: String, 
+        aasmTerminal: String) {
+        self.kmd = kmd
+        self.aasmTerminal = aasmTerminal
+    }
+}
+
+
+extension AasmOutput: Equatable, Hashable {
+    public static func ==(lhs: AasmOutput, rhs: AasmOutput) -> Bool {
+        if lhs.kmd != rhs.kmd {
+            return false
+        }
+        if lhs.aasmTerminal != rhs.aasmTerminal {
+            return false
+        }
+        return true
+    }
+
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(kmd)
+        hasher.combine(aasmTerminal)
+    }
+}
+
+
+public struct FfiConverterTypeAasmOutput: FfiConverterRustBuffer {
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> AasmOutput {
+        return
+            try AasmOutput(
+                kmd: FfiConverterString.read(from: &buf), 
+                aasmTerminal: FfiConverterString.read(from: &buf)
+        )
+    }
+
+    public static func write(_ value: AasmOutput, into buf: inout [UInt8]) {
+        FfiConverterString.write(value.kmd, into: &buf)
+        FfiConverterString.write(value.aasmTerminal, into: &buf)
+    }
+}
+
+
+public func FfiConverterTypeAasmOutput_lift(_ buf: RustBuffer) throws -> AasmOutput {
+    return try FfiConverterTypeAasmOutput.lift(buf)
+}
+
+public func FfiConverterTypeAasmOutput_lower(_ value: AasmOutput) -> RustBuffer {
+    return FfiConverterTypeAasmOutput.lower(value)
 }
 
 
@@ -1686,7 +1671,7 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 9981) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 58162) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
