@@ -461,11 +461,12 @@ public class IguanaEnvironment:
      * path to an `aasm` executable. There must also be a file called `mnemonics` in the same
      * directory.
      */
-    public convenience init(jimulatorPath: String, aasmPathStr: String) throws  {
+    public convenience init(jimulatorPath: String, aasmPath: String, mnemonicsPath: String) throws  {
         self.init(unsafeFromRawPointer: try rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_constructor_iguanaenvironment_new(
         FfiConverterString.lower(jimulatorPath),
-        FfiConverterString.lower(aasmPathStr),$0)
+        FfiConverterString.lower(aasmPath),
+        FfiConverterString.lower(mnemonicsPath),$0)
 })
     }
 
@@ -1722,7 +1723,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_write_to_terminal() != 47269) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_constructor_iguanaenvironment_new() != 7661) {
+    if (uniffi_libiguana_checksum_constructor_iguanaenvironment_new() != 31406) {
         return InitializationResult.apiChecksumMismatch
     }
 

@@ -26,7 +26,8 @@ let package = Package(
             ],
             resources: [
                 .copy("Resources/jimulator"),
-                .copy("Resources/aasm")
+                .copy("Resources/aasm"),
+                .copy("Resources/mnemonics"),
             ]
         ),
     ]
