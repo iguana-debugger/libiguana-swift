@@ -57,7 +57,7 @@ void uniffi_libiguana_fn_free_iguanaenvironment(void*_Nonnull ptr, RustCallStatu
 );
 void*_Nonnull uniffi_libiguana_fn_constructor_iguanaenvironment_new(RustBuffer jimulator_path, RustBuffer aasm_path, RustBuffer mnemonics_path, RustCallStatus *_Nonnull out_status
 );
-RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnull ptr, RustBuffer aasm_string, RustCallStatus *_Nonnull out_status
+RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnull ptr, RustBuffer aasm_path, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
