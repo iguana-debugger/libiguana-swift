@@ -389,7 +389,7 @@ fileprivate struct FfiConverterData: FfiConverterRustBuffer {
 
 public protocol IguanaEnvironmentProtocol : AnyObject {
     
-    func compileAasm(aasmPath: String) throws  -> AasmOutput
+    func compileAasm(aasmString: String) throws  -> AasmOutput
     
     func continueExecution() throws 
     
@@ -478,12 +478,12 @@ public class IguanaEnvironment:
 
     
     
-    public func compileAasm(aasmPath: String) throws  -> AasmOutput {
+    public func compileAasm(aasmString: String) throws  -> AasmOutput {
         return try  FfiConverterTypeAasmOutput.lift(
             try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(self.uniffiClonePointer(), 
-        FfiConverterString.lower(aasmPath),$0
+        FfiConverterString.lower(aasmString),$0
     )
 }
         )
@@ -1672,7 +1672,7 @@ private var initializationResult: InitializationResult {
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 10926) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 58162) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
