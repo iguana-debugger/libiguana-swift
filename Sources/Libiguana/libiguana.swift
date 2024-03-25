@@ -396,6 +396,13 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     func currentKmd()  -> [KmdparseToken]?
     
     /**
+     * Kills the underlying jimulator process. This function should not be used from within Rust -
+     * `IguanaEnvironment` implements `Drop` and handles killing the process for you. This exists
+     * because for some reason `Drop` isn't working through `uniffi`.
+     */
+    func killJimulator() throws 
+    
+    /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
      * function.
      */
@@ -504,6 +511,18 @@ public class IguanaEnvironment:
     )
 }
         )
+    }
+    /**
+     * Kills the underlying jimulator process. This function should not be used from within Rust -
+     * `IguanaEnvironment` implements `Drop` and handles killing the process for you. This exists
+     * because for some reason `Drop` isn't working through `uniffi`.
+     */
+    public func killJimulator() throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_kill_jimulator(self.uniffiClonePointer(), $0
+    )
+}
     }
     /**
      * Loads the given .kmd file. [`kmd`] is an unparsed string - parsing is handled by this
@@ -1679,6 +1698,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 35263) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_kill_jimulator() != 33920) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd() != 22342) {

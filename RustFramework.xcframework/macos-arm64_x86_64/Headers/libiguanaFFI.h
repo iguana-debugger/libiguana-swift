@@ -63,6 +63,8 @@ void uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(void*_Nonnu
 );
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_current_kmd(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+void uniffi_libiguana_fn_method_iguanaenvironment_kill_jimulator(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+);
 void uniffi_libiguana_fn_method_iguanaenvironment_load_kmd(void*_Nonnull ptr, RustBuffer kmd, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_pause(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
@@ -210,6 +212,9 @@ uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution(v
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd(void
+    
+);
+uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_kill_jimulator(void
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd(void
