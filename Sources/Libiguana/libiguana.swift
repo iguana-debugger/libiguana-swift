@@ -297,6 +297,19 @@ private func uniffiCheckCallStatus(
 // Public interface members begin here.
 
 
+fileprivate struct FfiConverterUInt8: FfiConverterPrimitive {
+    typealias FfiType = UInt8
+    typealias SwiftType = UInt8
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> UInt8 {
+        return try lift(readInt(&buf))
+    }
+
+    public static func write(_ value: UInt8, into buf: inout [UInt8]) {
+        writeInt(&buf, lower(value))
+    }
+}
+
 fileprivate struct FfiConverterUInt32: FfiConverterPrimitive {
     typealias FfiType = UInt32
     typealias SwiftType = UInt32
@@ -393,6 +406,8 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func continueExecution() throws 
     
+    func createNewBreakpoint(memoryAddress: UInt32) throws 
+    
     func currentKmd()  -> [KmdparseToken]?
     
     /**
@@ -434,6 +449,8 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     func stopExecution() throws 
     
     func terminalMessages() throws  -> String
+    
+    func traps()  -> [UInt32: UInt8]
     
     /**
      * Writes the given byte array to the jimulator process.
@@ -499,6 +516,14 @@ public class IguanaEnvironment:
         try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(self.uniffiClonePointer(), $0
+    )
+}
+    }
+    public func createNewBreakpoint(memoryAddress: UInt32) throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_create_new_breakpoint(self.uniffiClonePointer(), 
+        FfiConverterUInt32.lower(memoryAddress),$0
     )
 }
     }
@@ -623,6 +648,16 @@ public class IguanaEnvironment:
             try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_terminal_messages(self.uniffiClonePointer(), $0
+    )
+}
+        )
+    }
+    public func traps()  -> [UInt32: UInt8] {
+        return try!  FfiConverterDictionaryUInt32UInt8.lift(
+            try! 
+    rustCall() {
+    
+    uniffi_libiguana_fn_method_iguanaenvironment_traps(self.uniffiClonePointer(), $0
     )
 }
         )
@@ -1338,6 +1373,8 @@ public enum LibiguanaError {
     
     case MnemonicsDoesNotExist(message: String)
     
+    case TooManyTraps(message: String)
+    
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeLibiguanaError.lift(error)
@@ -1403,6 +1440,10 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             message: try FfiConverterString.read(from: &buf)
         )
         
+        case 13: return .TooManyTraps(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1438,6 +1479,8 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(11))
         case .MnemonicsDoesNotExist(_ /* message is ignored*/):
             writeInt(&buf, Int32(12))
+        case .TooManyTraps(_ /* message is ignored*/):
+            writeInt(&buf, Int32(13))
 
         
         }
@@ -1642,6 +1685,29 @@ fileprivate struct FfiConverterSequenceTypeKmdparseToken: FfiConverterRustBuffer
     }
 }
 
+fileprivate struct FfiConverterDictionaryUInt32UInt8: FfiConverterRustBuffer {
+    public static func write(_ value: [UInt32: UInt8], into buf: inout [UInt8]) {
+        let len = Int32(value.count)
+        writeInt(&buf, len)
+        for (key, value) in value {
+            FfiConverterUInt32.write(key, into: &buf)
+            FfiConverterUInt8.write(value, into: &buf)
+        }
+    }
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> [UInt32: UInt8] {
+        let len: Int32 = try readInt(&buf)
+        var dict = [UInt32: UInt8]()
+        dict.reserveCapacity(Int(len))
+        for _ in 0..<len {
+            let key = try FfiConverterUInt32.read(from: &buf)
+            let value = try FfiConverterUInt8.read(from: &buf)
+            dict[key] = value
+        }
+        return dict
+    }
+}
+
 
 /**
  * Typealias from the type name used in the UDL file to the builtin type.  This
@@ -1697,6 +1763,9 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
         return InitializationResult.apiChecksumMismatch
     }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_create_new_breakpoint() != 36875) {
+        return InitializationResult.apiChecksumMismatch
+    }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 35263) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -1734,6 +1803,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages() != 36437) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_traps() != 27473) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_write() != 7871) {

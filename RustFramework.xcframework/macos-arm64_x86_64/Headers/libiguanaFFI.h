@@ -61,6 +61,8 @@ RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnu
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+void uniffi_libiguana_fn_method_iguanaenvironment_create_new_breakpoint(void*_Nonnull ptr, uint32_t memory_address, RustCallStatus *_Nonnull out_status
+);
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_current_kmd(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_kill_jimulator(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
@@ -86,6 +88,8 @@ RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_status(void*_Nonnull ptr
 void uniffi_libiguana_fn_method_iguanaenvironment_stop_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_terminal_messages(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
+);
+RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_traps(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_write(void*_Nonnull ptr, RustBuffer payload, RustCallStatus *_Nonnull out_status
 );
@@ -211,6 +215,9 @@ uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm(void
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution(void
     
 );
+uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_create_new_breakpoint(void
+    
+);
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd(void
     
 );
@@ -248,6 +255,9 @@ uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_stop_execution(void
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages(void
+    
+);
+uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_traps(void
     
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_write(void
