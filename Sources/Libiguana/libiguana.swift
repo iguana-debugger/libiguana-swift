@@ -448,7 +448,7 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func stopExecution() throws 
     
-    func terminalMessages() throws  -> String
+    func terminalMessages() throws  -> Data
     
     func traps()  -> [UInt32: UInt8]
     
@@ -643,8 +643,8 @@ public class IguanaEnvironment:
     )
 }
     }
-    public func terminalMessages() throws  -> String {
-        return try  FfiConverterString.lift(
+    public func terminalMessages() throws  -> Data {
+        return try  FfiConverterData.lift(
             try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_terminal_messages(self.uniffiClonePointer(), $0
@@ -1802,7 +1802,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_stop_execution() != 65075) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages() != 36437) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages() != 17204) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_traps() != 27473) {
