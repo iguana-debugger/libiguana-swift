@@ -24,12 +24,10 @@
 
 typedef struct RustBuffer
 {
-    int32_t capacity;
-    int32_t len;
+    uint64_t capacity;
+    uint64_t len;
     uint8_t *_Nullable data;
 } RustBuffer;
-
-typedef int32_t (*ForeignCallback)(uint64_t, int32_t, const uint8_t *_Nonnull, int32_t, RustBuffer *_Nonnull);
 
 typedef struct ForeignBytes
 {
@@ -46,233 +44,738 @@ typedef struct RustCallStatus {
 // ⚠️ Attention: If you change this #else block (ending in `#endif // def UNIFFI_SHARED_H`) you *must* ⚠️
 // ⚠️ increment the version suffix in all instances of UNIFFI_SHARED_HEADER_V4 in this file.           ⚠️
 #endif // def UNIFFI_SHARED_H
+#ifndef UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
+#define UNIFFI_FFIDEF_RUST_FUTURE_CONTINUATION_CALLBACK
+typedef void (*UniffiRustFutureContinuationCallback)(uint64_t, int8_t
+    );
 
-// Continuation callback for UniFFI Futures
-typedef void (*UniFfiRustFutureContinuation)(void * _Nonnull, int8_t);
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_FREE
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_FREE
+typedef void (*UniffiForeignFutureFree)(uint64_t
+    );
 
-// Scaffolding functions
+#endif
+#ifndef UNIFFI_FFIDEF_CALLBACK_INTERFACE_FREE
+#define UNIFFI_FFIDEF_CALLBACK_INTERFACE_FREE
+typedef void (*UniffiCallbackInterfaceFree)(uint64_t
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE
+typedef struct UniffiForeignFuture {
+    uint64_t handle;
+    UniffiForeignFutureFree _Nonnull free;
+} UniffiForeignFuture;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U8
+typedef struct UniffiForeignFutureStructU8 {
+    uint8_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructU8;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U8
+typedef void (*UniffiForeignFutureCompleteU8)(uint64_t, UniffiForeignFutureStructU8
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I8
+typedef struct UniffiForeignFutureStructI8 {
+    int8_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructI8;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I8
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I8
+typedef void (*UniffiForeignFutureCompleteI8)(uint64_t, UniffiForeignFutureStructI8
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U16
+typedef struct UniffiForeignFutureStructU16 {
+    uint16_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructU16;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U16
+typedef void (*UniffiForeignFutureCompleteU16)(uint64_t, UniffiForeignFutureStructU16
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I16
+typedef struct UniffiForeignFutureStructI16 {
+    int16_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructI16;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I16
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I16
+typedef void (*UniffiForeignFutureCompleteI16)(uint64_t, UniffiForeignFutureStructI16
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U32
+typedef struct UniffiForeignFutureStructU32 {
+    uint32_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructU32;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U32
+typedef void (*UniffiForeignFutureCompleteU32)(uint64_t, UniffiForeignFutureStructU32
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I32
+typedef struct UniffiForeignFutureStructI32 {
+    int32_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructI32;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I32
+typedef void (*UniffiForeignFutureCompleteI32)(uint64_t, UniffiForeignFutureStructI32
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_U64
+typedef struct UniffiForeignFutureStructU64 {
+    uint64_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructU64;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_U64
+typedef void (*UniffiForeignFutureCompleteU64)(uint64_t, UniffiForeignFutureStructU64
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_I64
+typedef struct UniffiForeignFutureStructI64 {
+    int64_t returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructI64;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_I64
+typedef void (*UniffiForeignFutureCompleteI64)(uint64_t, UniffiForeignFutureStructI64
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F32
+typedef struct UniffiForeignFutureStructF32 {
+    float returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructF32;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F32
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F32
+typedef void (*UniffiForeignFutureCompleteF32)(uint64_t, UniffiForeignFutureStructF32
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_F64
+typedef struct UniffiForeignFutureStructF64 {
+    double returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructF64;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F64
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_F64
+typedef void (*UniffiForeignFutureCompleteF64)(uint64_t, UniffiForeignFutureStructF64
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_POINTER
+typedef struct UniffiForeignFutureStructPointer {
+    void*_Nonnull returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructPointer;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_POINTER
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_POINTER
+typedef void (*UniffiForeignFutureCompletePointer)(uint64_t, UniffiForeignFutureStructPointer
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_RUST_BUFFER
+typedef struct UniffiForeignFutureStructRustBuffer {
+    RustBuffer returnValue;
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructRustBuffer;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_RUST_BUFFER
+typedef void (*UniffiForeignFutureCompleteRustBuffer)(uint64_t, UniffiForeignFutureStructRustBuffer
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_STRUCT_VOID
+typedef struct UniffiForeignFutureStructVoid {
+    RustCallStatus callStatus;
+} UniffiForeignFutureStructVoid;
+
+#endif
+#ifndef UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_VOID
+#define UNIFFI_FFIDEF_FOREIGN_FUTURE_COMPLETE_VOID
+typedef void (*UniffiForeignFutureCompleteVoid)(uint64_t, UniffiForeignFutureStructVoid
+    );
+
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_CLONE_IGUANAENVIRONMENT
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_CLONE_IGUANAENVIRONMENT
 void*_Nonnull uniffi_libiguana_fn_clone_iguanaenvironment(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_FREE_IGUANAENVIRONMENT
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_FREE_IGUANAENVIRONMENT
 void uniffi_libiguana_fn_free_iguanaenvironment(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_CONSTRUCTOR_IGUANAENVIRONMENT_NEW
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_CONSTRUCTOR_IGUANAENVIRONMENT_NEW
 void*_Nonnull uniffi_libiguana_fn_constructor_iguanaenvironment_new(RustBuffer jimulator_path, RustBuffer aasm_path, RustBuffer mnemonics_path, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_COMPILE_AASM
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_COMPILE_AASM
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_compile_aasm(void*_Nonnull ptr, RustBuffer aasm_path, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CONTINUE_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CONTINUE_EXECUTION
 void uniffi_libiguana_fn_method_iguanaenvironment_continue_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CREATE_NEW_BREAKPOINT
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CREATE_NEW_BREAKPOINT
 void uniffi_libiguana_fn_method_iguanaenvironment_create_new_breakpoint(void*_Nonnull ptr, uint32_t memory_address, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CURRENT_KMD
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_CURRENT_KMD
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_current_kmd(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_KILL_JIMULATOR
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_KILL_JIMULATOR
 void uniffi_libiguana_fn_method_iguanaenvironment_kill_jimulator(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_LOAD_KMD
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_LOAD_KMD
 void uniffi_libiguana_fn_method_iguanaenvironment_load_kmd(void*_Nonnull ptr, RustBuffer kmd, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_PAUSE
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_PAUSE
 void uniffi_libiguana_fn_method_iguanaenvironment_pause(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_PING
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_PING
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_ping(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_READ_MEMORY
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_READ_MEMORY
 uint32_t uniffi_libiguana_fn_method_iguanaenvironment_read_memory(void*_Nonnull ptr, uint32_t address, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_READ_TO_END
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_READ_TO_END
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_read_to_end(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_REGISTERS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_REGISTERS
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_registers(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_RESET
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_RESET
 void uniffi_libiguana_fn_method_iguanaenvironment_reset(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_START_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_START_EXECUTION
 void uniffi_libiguana_fn_method_iguanaenvironment_start_execution(void*_Nonnull ptr, uint32_t steps, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_STATUS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_STATUS
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_status(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_STOP_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_STOP_EXECUTION
 void uniffi_libiguana_fn_method_iguanaenvironment_stop_execution(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_TERMINAL_MESSAGES
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_TERMINAL_MESSAGES
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_terminal_messages(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_TRAPS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_TRAPS
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_traps(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE
 void uniffi_libiguana_fn_method_iguanaenvironment_write(void*_Nonnull ptr, RustBuffer payload, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE_MEMORY
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE_MEMORY
 void uniffi_libiguana_fn_method_iguanaenvironment_write_memory(void*_Nonnull ptr, RustBuffer word, uint32_t address, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE_TO_TERMINAL
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_FN_METHOD_IGUANAENVIRONMENT_WRITE_TO_TERMINAL
 void uniffi_libiguana_fn_method_iguanaenvironment_write_to_terminal(void*_Nonnull ptr, RustBuffer message, RustCallStatus *_Nonnull out_status
 );
-RustBuffer ffi_libiguana_rustbuffer_alloc(int32_t size, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_ALLOC
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_ALLOC
+RustBuffer ffi_libiguana_rustbuffer_alloc(uint64_t size, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_FROM_BYTES
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_FROM_BYTES
 RustBuffer ffi_libiguana_rustbuffer_from_bytes(ForeignBytes bytes, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_FREE
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_FREE
 void ffi_libiguana_rustbuffer_free(RustBuffer buf, RustCallStatus *_Nonnull out_status
 );
-RustBuffer ffi_libiguana_rustbuffer_reserve(RustBuffer buf, int32_t additional, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_RESERVE
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUSTBUFFER_RESERVE
+RustBuffer ffi_libiguana_rustbuffer_reserve(RustBuffer buf, uint64_t additional, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_u8(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U8
+void ffi_libiguana_rust_future_poll_u8(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_u8(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U8
+void ffi_libiguana_rust_future_cancel_u8(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_u8(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U8
+void ffi_libiguana_rust_future_free_u8(uint64_t handle
 );
-uint8_t ffi_libiguana_rust_future_complete_u8(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U8
+uint8_t ffi_libiguana_rust_future_complete_u8(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_i8(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I8
+void ffi_libiguana_rust_future_poll_i8(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_i8(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I8
+void ffi_libiguana_rust_future_cancel_i8(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_i8(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I8
+void ffi_libiguana_rust_future_free_i8(uint64_t handle
 );
-int8_t ffi_libiguana_rust_future_complete_i8(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I8
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I8
+int8_t ffi_libiguana_rust_future_complete_i8(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_u16(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U16
+void ffi_libiguana_rust_future_poll_u16(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_u16(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U16
+void ffi_libiguana_rust_future_cancel_u16(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_u16(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U16
+void ffi_libiguana_rust_future_free_u16(uint64_t handle
 );
-uint16_t ffi_libiguana_rust_future_complete_u16(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U16
+uint16_t ffi_libiguana_rust_future_complete_u16(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_i16(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I16
+void ffi_libiguana_rust_future_poll_i16(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_i16(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I16
+void ffi_libiguana_rust_future_cancel_i16(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_i16(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I16
+void ffi_libiguana_rust_future_free_i16(uint64_t handle
 );
-int16_t ffi_libiguana_rust_future_complete_i16(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I16
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I16
+int16_t ffi_libiguana_rust_future_complete_i16(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_u32(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U32
+void ffi_libiguana_rust_future_poll_u32(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_u32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U32
+void ffi_libiguana_rust_future_cancel_u32(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_u32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U32
+void ffi_libiguana_rust_future_free_u32(uint64_t handle
 );
-uint32_t ffi_libiguana_rust_future_complete_u32(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U32
+uint32_t ffi_libiguana_rust_future_complete_u32(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_i32(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I32
+void ffi_libiguana_rust_future_poll_i32(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_i32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I32
+void ffi_libiguana_rust_future_cancel_i32(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_i32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I32
+void ffi_libiguana_rust_future_free_i32(uint64_t handle
 );
-int32_t ffi_libiguana_rust_future_complete_i32(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I32
+int32_t ffi_libiguana_rust_future_complete_i32(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_u64(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_U64
+void ffi_libiguana_rust_future_poll_u64(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_u64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_U64
+void ffi_libiguana_rust_future_cancel_u64(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_u64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_U64
+void ffi_libiguana_rust_future_free_u64(uint64_t handle
 );
-uint64_t ffi_libiguana_rust_future_complete_u64(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_U64
+uint64_t ffi_libiguana_rust_future_complete_u64(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_i64(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_I64
+void ffi_libiguana_rust_future_poll_i64(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_i64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_I64
+void ffi_libiguana_rust_future_cancel_i64(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_i64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_I64
+void ffi_libiguana_rust_future_free_i64(uint64_t handle
 );
-int64_t ffi_libiguana_rust_future_complete_i64(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_I64
+int64_t ffi_libiguana_rust_future_complete_i64(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_f32(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_F32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_F32
+void ffi_libiguana_rust_future_poll_f32(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_f32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_F32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_F32
+void ffi_libiguana_rust_future_cancel_f32(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_f32(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_F32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_F32
+void ffi_libiguana_rust_future_free_f32(uint64_t handle
 );
-float ffi_libiguana_rust_future_complete_f32(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_F32
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_F32
+float ffi_libiguana_rust_future_complete_f32(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_f64(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_F64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_F64
+void ffi_libiguana_rust_future_poll_f64(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_f64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_F64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_F64
+void ffi_libiguana_rust_future_cancel_f64(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_f64(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_F64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_F64
+void ffi_libiguana_rust_future_free_f64(uint64_t handle
 );
-double ffi_libiguana_rust_future_complete_f64(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_F64
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_F64
+double ffi_libiguana_rust_future_complete_f64(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_pointer(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_POINTER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_POINTER
+void ffi_libiguana_rust_future_poll_pointer(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_pointer(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_POINTER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_POINTER
+void ffi_libiguana_rust_future_cancel_pointer(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_pointer(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_POINTER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_POINTER
+void ffi_libiguana_rust_future_free_pointer(uint64_t handle
 );
-void*_Nonnull ffi_libiguana_rust_future_complete_pointer(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_POINTER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_POINTER
+void*_Nonnull ffi_libiguana_rust_future_complete_pointer(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_rust_buffer(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_RUST_BUFFER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_RUST_BUFFER
+void ffi_libiguana_rust_future_poll_rust_buffer(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_rust_buffer(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_RUST_BUFFER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_RUST_BUFFER
+void ffi_libiguana_rust_future_cancel_rust_buffer(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_rust_buffer(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_RUST_BUFFER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_RUST_BUFFER
+void ffi_libiguana_rust_future_free_rust_buffer(uint64_t handle
 );
-RustBuffer ffi_libiguana_rust_future_complete_rust_buffer(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_RUST_BUFFER
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_RUST_BUFFER
+RustBuffer ffi_libiguana_rust_future_complete_rust_buffer(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
-void ffi_libiguana_rust_future_poll_void(void* _Nonnull handle, UniFfiRustFutureContinuation _Nonnull callback, void* _Nonnull callback_data
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_VOID
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_POLL_VOID
+void ffi_libiguana_rust_future_poll_void(uint64_t handle, UniffiRustFutureContinuationCallback _Nonnull callback, uint64_t callback_data
 );
-void ffi_libiguana_rust_future_cancel_void(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_VOID
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_CANCEL_VOID
+void ffi_libiguana_rust_future_cancel_void(uint64_t handle
 );
-void ffi_libiguana_rust_future_free_void(void* _Nonnull handle
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_VOID
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_FREE_VOID
+void ffi_libiguana_rust_future_free_void(uint64_t handle
 );
-void ffi_libiguana_rust_future_complete_void(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_VOID
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_RUST_FUTURE_COMPLETE_VOID
+void ffi_libiguana_rust_future_complete_void(uint64_t handle, RustCallStatus *_Nonnull out_status
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_COMPILE_AASM
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_COMPILE_AASM
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CONTINUE_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CONTINUE_EXECUTION
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CREATE_NEW_BREAKPOINT
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CREATE_NEW_BREAKPOINT
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_create_new_breakpoint(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CURRENT_KMD
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_CURRENT_KMD
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_KILL_JIMULATOR
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_KILL_JIMULATOR
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_kill_jimulator(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_LOAD_KMD
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_LOAD_KMD
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_load_kmd(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_PAUSE
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_PAUSE
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_pause(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_PING
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_PING
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_ping(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_READ_MEMORY
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_READ_MEMORY
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_read_memory(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_READ_TO_END
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_READ_TO_END
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_read_to_end(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_REGISTERS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_REGISTERS
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_registers(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_RESET
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_RESET
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_reset(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_START_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_START_EXECUTION
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_start_execution(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_STATUS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_STATUS
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_status(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_STOP_EXECUTION
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_STOP_EXECUTION
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_stop_execution(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_TERMINAL_MESSAGES
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_TERMINAL_MESSAGES
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_terminal_messages(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_TRAPS
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_TRAPS
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_traps(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_write(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE_MEMORY
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE_MEMORY
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_write_memory(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE_TO_TERMINAL
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_METHOD_IGUANAENVIRONMENT_WRITE_TO_TERMINAL
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_write_to_terminal(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_CONSTRUCTOR_IGUANAENVIRONMENT_NEW
+#define UNIFFI_FFIDEF_UNIFFI_LIBIGUANA_CHECKSUM_CONSTRUCTOR_IGUANAENVIRONMENT_NEW
 uint16_t uniffi_libiguana_checksum_constructor_iguanaenvironment_new(void
     
 );
+#endif
+#ifndef UNIFFI_FFIDEF_FFI_LIBIGUANA_UNIFFI_CONTRACT_VERSION
+#define UNIFFI_FFIDEF_FFI_LIBIGUANA_UNIFFI_CONTRACT_VERSION
 uint32_t ffi_libiguana_uniffi_contract_version(void
     
 );
+#endif
 
