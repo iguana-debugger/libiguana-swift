@@ -429,11 +429,6 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func readMemory(address: UInt32) throws  -> U84Arr
     
-    /**
-     * Reads from the jimulator process using read_until_end.
-     */
-    func readToEnd() throws  -> Data
-    
     func registers() throws  -> Registers
     
     func reset() throws 
@@ -451,11 +446,6 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     func terminalMessages() throws  -> Data
     
     func traps()  -> [UInt32: UInt8]
-    
-    /**
-     * Writes the given byte array to the jimulator process.
-     */
-    func write(payload: Data) throws 
     
     func writeMemory(word: Data, address: UInt32) throws 
     
@@ -587,18 +577,6 @@ public class IguanaEnvironment:
 }
         )
     }
-    /**
-     * Reads from the jimulator process using read_until_end.
-     */
-    public func readToEnd() throws  -> Data {
-        return try  FfiConverterData.lift(
-            try 
-    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
-    uniffi_libiguana_fn_method_iguanaenvironment_read_to_end(self.uniffiClonePointer(), $0
-    )
-}
-        )
-    }
     public func registers() throws  -> Registers {
         return try  FfiConverterTypeRegisters.lift(
             try 
@@ -661,17 +639,6 @@ public class IguanaEnvironment:
     )
 }
         )
-    }
-    /**
-     * Writes the given byte array to the jimulator process.
-     */
-    public func write(payload: Data) throws  {
-        try 
-    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
-    uniffi_libiguana_fn_method_iguanaenvironment_write(self.uniffiClonePointer(), 
-        FfiConverterData.lower(payload),$0
-    )
-}
     }
     public func writeMemory(word: Data, address: UInt32) throws  {
         try 
@@ -1784,9 +1751,6 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_read_memory() != 62623) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_read_to_end() != 48505) {
-        return InitializationResult.apiChecksumMismatch
-    }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
         return InitializationResult.apiChecksumMismatch
     }
@@ -1806,9 +1770,6 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_traps() != 27473) {
-        return InitializationResult.apiChecksumMismatch
-    }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_write() != 7871) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_write_memory() != 50207) {
