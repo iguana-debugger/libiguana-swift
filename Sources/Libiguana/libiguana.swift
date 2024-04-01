@@ -427,7 +427,7 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func ping() throws  -> String
     
-    func readMemory(address: UInt32) throws  -> U84Arr
+    func readMemory(address: UInt32) throws  -> UInt32
     
     func registers() throws  -> Registers
     
@@ -567,8 +567,8 @@ public class IguanaEnvironment:
 }
         )
     }
-    public func readMemory(address: UInt32) throws  -> U84Arr {
-        return try  FfiConverterTypeU84Arr.lift(
+    public func readMemory(address: UInt32) throws  -> UInt32 {
+        return try  FfiConverterUInt32.lift(
             try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_read_memory(self.uniffiClonePointer(), 
@@ -1818,7 +1818,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_ping() != 59828) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_read_memory() != 62623) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_read_memory() != 17589) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
