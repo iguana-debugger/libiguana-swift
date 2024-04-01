@@ -93,6 +93,8 @@ void uniffi_libiguana_fn_method_iguanaenvironment_write_memory(void*_Nonnull ptr
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_write_to_terminal(void*_Nonnull ptr, RustBuffer message, RustCallStatus *_Nonnull out_status
 );
+RustBuffer uniffi_libiguana_fn_func_decode_instruction(uint32_t word, RustCallStatus *_Nonnull out_status
+);
 RustBuffer ffi_libiguana_rustbuffer_alloc(int32_t size, RustCallStatus *_Nonnull out_status
 );
 RustBuffer ffi_libiguana_rustbuffer_from_bytes(ForeignBytes bytes, RustCallStatus *_Nonnull out_status
@@ -204,6 +206,9 @@ void ffi_libiguana_rust_future_cancel_void(void* _Nonnull handle
 void ffi_libiguana_rust_future_free_void(void* _Nonnull handle
 );
 void ffi_libiguana_rust_future_complete_void(void* _Nonnull handle, RustCallStatus *_Nonnull out_status
+);
+uint16_t uniffi_libiguana_checksum_func_decode_instruction(void
+    
 );
 uint16_t uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm(void
     

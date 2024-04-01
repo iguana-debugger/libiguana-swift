@@ -1176,6 +1176,61 @@ public func FfiConverterTypeRegisters_lower(_ value: Registers) -> RustBuffer {
     return FfiConverterTypeRegisters.lower(value)
 }
 
+
+/**
+ * A wrapper around yaxpeax's `DecoderError` so that it can be passed through uniffi
+ */
+public enum DecoderError {
+
+    
+    
+    case DecodeError(message: String)
+    
+
+    fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
+        return try FfiConverterTypeDecoderError.lift(error)
+    }
+}
+
+
+public struct FfiConverterTypeDecoderError: FfiConverterRustBuffer {
+    typealias SwiftType = DecoderError
+
+    public static func read(from buf: inout (data: Data, offset: Data.Index)) throws -> DecoderError {
+        let variant: Int32 = try readInt(&buf)
+        switch variant {
+
+        
+
+        
+        case 1: return .DecodeError(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
+
+        default: throw UniffiInternalError.unexpectedEnumCase
+        }
+    }
+
+    public static func write(_ value: DecoderError, into buf: inout [UInt8]) {
+        switch value {
+
+        
+
+        
+        case .DecodeError(_ /* message is ignored*/):
+            writeInt(&buf, Int32(1))
+
+        
+        }
+    }
+}
+
+
+extension DecoderError: Equatable, Hashable {}
+
+extension DecoderError: Error { }
+
 // Note that we don't yet support `indirect` for enums.
 // See https://github.com/mozilla/uniffi-rs/issues/396 for further discussion.
 public enum KmdparseToken {
@@ -1708,6 +1763,18 @@ public func FfiConverterTypeU84Arr_lower(_ value: U84Arr) -> UInt32 {
     return FfiConverterTypeU84Arr.lower(value)
 }
 
+/**
+ * Decodes the given word into an ARM instruction. I'd rather have this contained in a struct, but
+ * uniffi doesn't like associated functions.
+ */
+public func decodeInstruction(word: UInt32) throws  -> String {
+    return try  FfiConverterString.lift(
+        try rustCallWithError(FfiConverterTypeDecoderError.lift) {
+    uniffi_libiguana_fn_func_decode_instruction(
+        FfiConverterUInt32.lower(word),$0)
+}
+    )
+}
 
 private enum InitializationResult {
     case ok
@@ -1723,6 +1790,9 @@ private var initializationResult: InitializationResult {
     let scaffolding_contract_version = ffi_libiguana_uniffi_contract_version()
     if bindings_contract_version != scaffolding_contract_version {
         return InitializationResult.contractVersionMismatch
+    }
+    if (uniffi_libiguana_checksum_func_decode_instruction() != 56991) {
+        return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_compile_aasm() != 10926) {
         return InitializationResult.apiChecksumMismatch
