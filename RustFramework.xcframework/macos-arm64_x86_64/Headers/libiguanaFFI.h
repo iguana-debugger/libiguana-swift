@@ -77,7 +77,7 @@ uint32_t uniffi_libiguana_fn_method_iguanaenvironment_read_memory(void*_Nonnull 
 );
 RustBuffer uniffi_libiguana_fn_method_iguanaenvironment_registers(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );
-void uniffi_libiguana_fn_method_iguanaenvironment_remove_breakpoint(void*_Nonnull ptr, uint8_t trap_number, RustCallStatus *_Nonnull out_status
+void uniffi_libiguana_fn_method_iguanaenvironment_remove_breakpoint(void*_Nonnull ptr, uint32_t memory_address, RustCallStatus *_Nonnull out_status
 );
 void uniffi_libiguana_fn_method_iguanaenvironment_reset(void*_Nonnull ptr, RustCallStatus *_Nonnull out_status
 );

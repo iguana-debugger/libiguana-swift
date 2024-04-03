@@ -431,7 +431,7 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func registers() throws  -> Registers
     
-    func removeBreakpoint(trapNumber: UInt8) throws 
+    func removeBreakpoint(memoryAddress: UInt32) throws 
     
     func reset() throws 
     
@@ -588,11 +588,11 @@ public class IguanaEnvironment:
 }
         )
     }
-    public func removeBreakpoint(trapNumber: UInt8) throws  {
+    public func removeBreakpoint(memoryAddress: UInt32) throws  {
         try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
     uniffi_libiguana_fn_method_iguanaenvironment_remove_breakpoint(self.uniffiClonePointer(), 
-        FfiConverterUInt8.lower(trapNumber),$0
+        FfiConverterUInt32.lower(memoryAddress),$0
     )
 }
     }
@@ -1407,6 +1407,8 @@ public enum LibiguanaError {
     
     case TooManyTraps(message: String)
     
+    case NoTrapForAddress(message: String)
+    
 
     fileprivate static func uniffiErrorHandler(_ error: RustBuffer) throws -> Error {
         return try FfiConverterTypeLibiguanaError.lift(error)
@@ -1476,6 +1478,10 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             message: try FfiConverterString.read(from: &buf)
         )
         
+        case 14: return .NoTrapForAddress(
+            message: try FfiConverterString.read(from: &buf)
+        )
+        
 
         default: throw UniffiInternalError.unexpectedEnumCase
         }
@@ -1513,6 +1519,8 @@ public struct FfiConverterTypeLibiguanaError: FfiConverterRustBuffer {
             writeInt(&buf, Int32(12))
         case .TooManyTraps(_ /* message is ignored*/):
             writeInt(&buf, Int32(13))
+        case .NoTrapForAddress(_ /* message is ignored*/):
+            writeInt(&buf, Int32(14))
 
         
         }
@@ -1834,7 +1842,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_remove_breakpoint() != 376) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_remove_breakpoint() != 29356) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_reset() != 26955) {
