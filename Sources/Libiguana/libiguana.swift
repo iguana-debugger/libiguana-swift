@@ -406,7 +406,7 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     
     func continueExecution() throws 
     
-    func createNewBreakpoint(memoryAddress: UInt32) throws 
+    func createBreakpoint(memoryAddress: UInt32) throws 
     
     func currentKmd()  -> [KmdparseToken]?
     
@@ -430,6 +430,8 @@ public protocol IguanaEnvironmentProtocol : AnyObject {
     func readMemory(address: UInt32) throws  -> UInt32
     
     func registers() throws  -> Registers
+    
+    func removeBreakpoint(trapNumber: UInt8) throws 
     
     func reset() throws 
     
@@ -509,10 +511,10 @@ public class IguanaEnvironment:
     )
 }
     }
-    public func createNewBreakpoint(memoryAddress: UInt32) throws  {
+    public func createBreakpoint(memoryAddress: UInt32) throws  {
         try 
     rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
-    uniffi_libiguana_fn_method_iguanaenvironment_create_new_breakpoint(self.uniffiClonePointer(), 
+    uniffi_libiguana_fn_method_iguanaenvironment_create_breakpoint(self.uniffiClonePointer(), 
         FfiConverterUInt32.lower(memoryAddress),$0
     )
 }
@@ -585,6 +587,14 @@ public class IguanaEnvironment:
     )
 }
         )
+    }
+    public func removeBreakpoint(trapNumber: UInt8) throws  {
+        try 
+    rustCallWithError(FfiConverterTypeLibiguanaError.lift) {
+    uniffi_libiguana_fn_method_iguanaenvironment_remove_breakpoint(self.uniffiClonePointer(), 
+        FfiConverterUInt8.lower(trapNumber),$0
+    )
+}
     }
     public func reset() throws  {
         try 
@@ -1800,7 +1810,7 @@ private var initializationResult: InitializationResult {
     if (uniffi_libiguana_checksum_method_iguanaenvironment_continue_execution() != 23014) {
         return InitializationResult.apiChecksumMismatch
     }
-    if (uniffi_libiguana_checksum_method_iguanaenvironment_create_new_breakpoint() != 36875) {
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_create_breakpoint() != 48333) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_current_kmd() != 35263) {
@@ -1822,6 +1832,9 @@ private var initializationResult: InitializationResult {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_registers() != 16837) {
+        return InitializationResult.apiChecksumMismatch
+    }
+    if (uniffi_libiguana_checksum_method_iguanaenvironment_remove_breakpoint() != 376) {
         return InitializationResult.apiChecksumMismatch
     }
     if (uniffi_libiguana_checksum_method_iguanaenvironment_reset() != 26955) {
